@@ -1,28 +1,34 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
 import './App.css';
+import ReadString from './ReadString';
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+    state = {loading: true, drizzleState: null};
+
+    componentDidMount() {
+        const {drizzle} = this.props;
+        this.unsubscribe = drizzle.store.subscribe(() => {
+            const drizzleState = drizzle.store.getState();
+
+            if (drizzleState.drizzleStatus.initialized) {
+                this.setState({loading: false, drizzleState});
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+
+    render() {
+        if (this.state.loading) return "Loading Drizzle...";
+        return (<div className="App">
+            <ReadString
+                drizzle={this.props.drizzle}
+                drizzleState={this.state.drizzleState}
+            />
+        </div>);
+    }
 }
 
 export default App;
