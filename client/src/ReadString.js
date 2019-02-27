@@ -9,8 +9,6 @@ class ReadString extends React.Component {
         const dataKey = contract.methods["myString"].cacheCall();
 
         this.setState({ dataKey });
-
-        console.log(drizzle);
     }
 
     render() {
